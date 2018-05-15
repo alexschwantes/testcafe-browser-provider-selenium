@@ -32,6 +32,16 @@ testCafe
     .run();
 ```
 
+### Specifying the Browser Version and Platform
+The browser version and platform can be specified along with the browser name alias in the format:
+```
+selenium:browserName[@version][:platform]
+```
+for example:
+* selenium:chrome
+* selenium:chrome@52.0
+* selenium:chrome@52.0:linux
+
 ## Configuration
 
 Use the following optional environment variable to set additional configuration options:
