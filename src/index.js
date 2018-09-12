@@ -30,7 +30,7 @@ export default {
     },
 
     async closeBrowser (id) {
-        this.openedBrowsers[id].quit();
+        await this.openedBrowsers[id].quit();
     },
 
     // Optional - implement methods you need, remove other methods
@@ -40,7 +40,15 @@ export default {
     },
 
     async dispose () {
-        return;
+        // ensure every session is closed on process exit
+        for (const id in this.openedBrowsers) {
+            try {
+                await this.openedBrowsers[id].quit();
+            }
+            catch (error) {
+                // browser has already been closed
+            }
+        }
     },
 
     // Optional methods for multi-browser support
