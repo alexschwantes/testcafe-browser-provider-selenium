@@ -3,9 +3,11 @@ import { writeFileSync } from 'fs';
 
 export default {
     // Multiple browsers support
-    isMultiBrowser: false,
-    openedBrowsers: {},
-    seleniumServer: null,
+    isMultiBrowser:    false,
+    openedBrowsers:    {},
+    seleniumServer:    null,
+    heartbeatHandler:  {},
+    heartbeatInterval: Number(process.env.SELENIUM_HEARTBEAT) || 10e3,
 
     /**
      * Open the browser with the given parameters
@@ -27,9 +29,37 @@ export default {
 
         browser.get(pageUrl);
         this.openedBrowsers[id] = browser;
+        this.startHeartbeat(id, browser);
+    },
+
+    sleep (time) {
+        return new Promise(function (resolve) {
+            setTimeout(function () {
+                resolve();
+            }, time);
+        });
+    },
+
+    async startHeartbeat (id, browser) {
+        this.heartbeatHandler[id] = true;
+        while (this.heartbeatHandler[id]) {
+            try {
+                // send a command to hub to keep session
+                await browser.getTitle();
+            }
+            catch (error) {
+                // ignore error
+            }
+            await this.sleep(this.heartbeatInterval);
+        }
+    },
+
+    stopHeartbeat (id) {
+        this.heartbeatHandler[id] = false;
     },
 
     async closeBrowser (id) {
+        this.stopHeartbeat(id);
         await this.openedBrowsers[id].quit();
     },
 
@@ -42,6 +72,7 @@ export default {
     async dispose () {
         // ensure every session is closed on process exit
         for (const id in this.openedBrowsers) {
+            this.stopHeartbeat(id);
             try {
                 await this.openedBrowsers[id].quit();
             }
