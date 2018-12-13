@@ -110,6 +110,10 @@ export default {
     async takeScreenshot (id, screenshotPath /*, pageWidth, pageHeight*/) {
         const screenshot = await this.openedBrowsers[id].takeScreenshot(screenshotPath);
 
-        await writeFileSync(screenshotPath, screenshot, 'base64');
+        writeFileSync(screenshotPath, screenshot, 'base64');
+    },
+
+    async isLocalBrowser () {
+        return false;
     }
 };
