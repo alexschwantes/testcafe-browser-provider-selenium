@@ -29,7 +29,8 @@ export default {
 
         browser.get(pageUrl);
         this.openedBrowsers[id] = browser;
-        this.startHeartbeat(id, browser);
+        if (this.heartbeatInterval > 0)
+            this.startHeartbeat(id, browser);
     },
 
     sleep (time) {
