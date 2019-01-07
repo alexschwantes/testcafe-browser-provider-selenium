@@ -27,7 +27,7 @@ export default {
         platform = platform ? platform[1] : undefined; // eslint-disable-line no-undefined
         const browser = await new Builder().forBrowser(browserNameString[1], version, platform).usingServer(this.seleniumServer).build();
 
-        browser.get(pageUrl);
+        await browser.get(pageUrl);
         this.openedBrowsers[id] = browser;
         if (this.heartbeatInterval > 0)
             this.startHeartbeat(id, browser);
