@@ -60,7 +60,8 @@ export default {
     },
 
     async closeBrowser (id) {
-        this.stopHeartbeat(id);
+        if (this.heartbeatInterval > 0)
+            this.stopHeartbeat(id);
         await this.openedBrowsers[id].quit();
     },
 
@@ -73,7 +74,8 @@ export default {
     async dispose () {
         // ensure every session is closed on process exit
         for (const id in this.openedBrowsers) {
-            this.stopHeartbeat(id);
+            if (this.heartbeatInterval > 0)
+                this.stopHeartbeat(id);
             try {
                 await this.openedBrowsers[id].quit();
             }
