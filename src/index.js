@@ -3,9 +3,11 @@ import { writeFileSync } from 'fs';
 
 export default {
     // Multiple browsers support
-    isMultiBrowser: false,
-    openedBrowsers: {},
-    seleniumServer: null,
+    isMultiBrowser:    false,
+    openedBrowsers:    {},
+    seleniumServer:    null,
+    heartbeatHandler:  {},
+    heartbeatInterval: Number(process.env.SELENIUM_HEARTBEAT) || 10e3,
 
     /**
      * Open the browser with the given parameters
@@ -25,12 +27,42 @@ export default {
         platform = platform ? platform[1] : undefined; // eslint-disable-line no-undefined
         const browser = await new Builder().forBrowser(browserNameString[1], version, platform).usingServer(this.seleniumServer).build();
 
-        browser.get(pageUrl);
+        await browser.get(pageUrl);
         this.openedBrowsers[id] = browser;
+        if (this.heartbeatInterval > 0)
+            this.startHeartbeat(id, browser);
+    },
+
+    sleep (time) {
+        return new Promise(function (resolve) {
+            setTimeout(function () {
+                resolve();
+            }, time);
+        });
+    },
+
+    async startHeartbeat (id, browser) {
+        this.heartbeatHandler[id] = true;
+        while (this.heartbeatHandler[id]) {
+            try {
+                // send a command to hub to keep session
+                await browser.getTitle();
+            }
+            catch (error) {
+                // ignore error
+            }
+            await this.sleep(this.heartbeatInterval);
+        }
+    },
+
+    stopHeartbeat (id) {
+        this.heartbeatHandler[id] = false;
     },
 
     async closeBrowser (id) {
-        this.openedBrowsers[id].quit();
+        if (this.heartbeatInterval > 0)
+            this.stopHeartbeat(id);
+        await this.openedBrowsers[id].quit();
     },
 
     // Optional - implement methods you need, remove other methods
@@ -40,7 +72,17 @@ export default {
     },
 
     async dispose () {
-        return;
+        // ensure every session is closed on process exit
+        for (const id in this.openedBrowsers) {
+            if (this.heartbeatInterval > 0)
+                this.stopHeartbeat(id);
+            try {
+                await this.openedBrowsers[id].quit();
+            }
+            catch (error) {
+                // browser has already been closed
+            }
+        }
     },
 
     // Optional methods for multi-browser support
@@ -71,6 +113,10 @@ export default {
     async takeScreenshot (id, screenshotPath /*, pageWidth, pageHeight*/) {
         const screenshot = await this.openedBrowsers[id].takeScreenshot(screenshotPath);
 
-        await writeFileSync(screenshotPath, screenshot, 'base64');
+        writeFileSync(screenshotPath, screenshot, 'base64');
+    },
+
+    async isLocalBrowser () {
+        return false;
     }
 };
