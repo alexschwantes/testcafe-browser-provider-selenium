@@ -40,6 +40,6 @@
     "gulp-eslint": "^3.0.1",
     "gulp-mocha": "^5.0.0",
     "node-version": "^1.0.0",
-    "publish-please": "^2.1.4"
+    "publish-please": "^5.4.3"
   }
 }
