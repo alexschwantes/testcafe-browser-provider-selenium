@@ -47,6 +47,7 @@ for example:
 Use the following optional environment variable to set additional configuration options:
 
  - `SELENIUM_SERVER` - (optional) the url to the selenium server. If not set the default 'http://localhost:4444/wd/hub' will be used.
- 
+ - `SELENIUM_HEARTBEAT` - (optional) Adjust or disable the selenium heartbeat. Default is 10,000 milliseconds, set to <= 0 to disable.
+
 ## Author
 Alex Schwantes 
