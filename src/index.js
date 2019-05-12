@@ -37,7 +37,9 @@ export default {
 
         const browserNameString = browserName.match(/([^@:]+)/);
         const browserFormalName = browserNameString[1].trim();
+        
         let version = browserName.match(/@([^:]+)/);
+
         let platform = browserName.match(/:(.+)/);
 
         version = version ? version[1] : undefined; // eslint-disable-line no-undefined
