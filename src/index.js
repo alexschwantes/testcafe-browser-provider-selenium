@@ -1,5 +1,20 @@
 import { Builder } from 'selenium-webdriver';
-import { writeFileSync } from 'fs';
+
+import { Options as ChromeOptions } from 'selenium-webdriver/chrome';
+import { Options as FirefoxOptions } from 'selenium-webdriver/firefox';
+import { Options as SafariOptions } from 'selenium-webdriver/safari';
+import { Options as EdgeOptions } from 'selenium-webdriver/edge';
+import { Options as IeOptions } from 'selenium-webdriver/ie';
+
+import { writeFileSync, readFileSync, existsSync } from 'fs';
+
+const optionSetterMaps = {
+    chrome:              (builder, caps) => builder.setChromeOptions(new ChromeOptions(caps)),
+    firefox:             (builder, caps) => builder.setFirefoxOptions(new FirefoxOptions(caps)),
+    safari:              (builder, caps) => builder.setSafariOptions(new SafariOptions(caps)),
+    MicrosoftEdge:       (builder, caps) => builder.setEdgeOptions(new EdgeOptions(caps)),
+    'internet explorer': (builder, caps) => builder.setIeOptions(new IeOptions(caps)),
+};
 
 export default {
     // Multiple browsers support
@@ -8,6 +23,7 @@ export default {
     seleniumServer:    null,
     heartbeatHandler:  {},
     heartbeatInterval: Number(process.env.SELENIUM_HEARTBEAT) || 10e3,
+    capabilities:      process.env.SELENIUM_CAPABILITIES || 'capabilities.json',
 
     /**
      * Open the browser with the given parameters
@@ -20,13 +36,24 @@ export default {
             throw new Error('Unsupported browser!');
 
         const browserNameString = browserName.match(/([^@:]+)/);
+        const browserFormalName = browserNameString[1].trim();
         let version = browserName.match(/@([^:]+)/);
         let platform = browserName.match(/:(.+)/);
 
         version = version ? version[1] : undefined; // eslint-disable-line no-undefined
         platform = platform ? platform[1] : undefined; // eslint-disable-line no-undefined
-        const browser = await new Builder().forBrowser(browserNameString[1], version, platform).usingServer(this.seleniumServer).build();
 
+        const builder = new Builder().forBrowser(browserFormalName, version, platform).usingServer(this.seleniumServer);
+        const optionSetter = optionSetterMaps[browserFormalName];
+
+        if (optionSetter && existsSync(this.capabilities)) {
+            const caps = JSON.parse(readFileSync(this.capabilities))[browserName.trim()];
+
+            if (caps)
+                optionSetter(builder, caps);
+        }
+
+        const browser = await builder.build(); // eslint-disable-line
         await browser.get(pageUrl);
         this.openedBrowsers[id] = browser;
         if (this.heartbeatInterval > 0)
