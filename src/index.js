@@ -145,6 +145,12 @@ export default {
         writeFileSync(screenshotPath, screenshot, 'base64');
     },
 
+    async getVideoFrameData (id) {
+        const screenshot = await this.openedBrowsers[id].takeScreenshot();
+
+        return await Buffer.from(screenshot, 'base64');
+    },
+
     async isLocalBrowser () {
         return false;
     }
