@@ -43,7 +43,7 @@ for example:
 * selenium:chrome@52.0:linux
 
 ### Customize Capabilities
-The capabilities of browsers can be further customize via configuration file (default is capabilities.json).
+The capabilities of browsers can be further customized via configuration file (default is capabilities.json).
 
 for example:
 ```json
@@ -60,6 +60,24 @@ for example:
         }
     }
 }
+```
+
+### Enable Video Recording
+This provider supports the native TestCafe video recording functionality (--video) with a small tweak. For this to work properly, you must add `@ffmpeg-installer/ffmpeg` to both your project and your docker image and install its' dependencies.
+
+for example:
+```bash
+FROM node:latest AS node_base
+
+RUN npm install -g @ffmpeg-installer/ffmpeg
+
+FROM selenium/standalone-chrome
+
+USER root
+
+COPY --from=node_base . .
+
+RUN cd /usr/local/lib/node_modules/@ffmpeg-installer/ffmpeg && npm install # This is important
 ```
 
 ## Configuration
