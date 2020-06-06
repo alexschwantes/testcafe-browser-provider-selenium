@@ -63,7 +63,7 @@ for example:
 ```
 
 ### Enable Video Recording
-This provider supports the native TestCafe video recording functionality (--video) with a small tweak. For this to work properly, you must add `@ffmpeg-installer/ffmpeg` to both your project and your docker image and install its' dependencies.
+This provider supports the native TestCafe video recording functionality ([--video](https://devexpress.github.io/testcafe/documentation/reference/command-line-interface.html#--video-basepath)) with a small tweak. For this to work properly, you must add `@ffmpeg-installer/ffmpeg` to both your project and your docker image and install its' dependencies.
 
 for example:
 ```bash
