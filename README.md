@@ -62,24 +62,6 @@ for example:
 }
 ```
 
-### Enable Video Recording
-This provider supports the native TestCafe video recording functionality ([--video](https://devexpress.github.io/testcafe/documentation/reference/command-line-interface.html#--video-basepath)) with a small tweak. For this to work properly, you must add `@ffmpeg-installer/ffmpeg` to both your project and your docker image and install its' dependencies.
-
-for example:
-```bash
-FROM node:latest AS node_base
-
-RUN npm install -g @ffmpeg-installer/ffmpeg
-
-FROM selenium/standalone-chrome
-
-USER root
-
-COPY --from=node_base . .
-
-RUN cd /usr/local/lib/node_modules/@ffmpeg-installer/ffmpeg && npm install # This is important
-```
-
 ## Configuration
 
 Use the following optional environment variable to set additional configuration options:
