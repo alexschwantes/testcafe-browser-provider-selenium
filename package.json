@@ -1,6 +1,6 @@
 {
   "name": "testcafe-browser-provider-selenium",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Selenium TestCafe browser provider plugin.",
   "repository": "https://github.com/alexschwantes/testcafe-browser-provider-selenium",
   "homepage": "https://github.com/alexschwantes/testcafe-browser-provider-selenium",
