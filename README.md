@@ -43,7 +43,7 @@ for example:
 * selenium:chrome@52.0:linux
 
 ### Customize Capabilities
-The capabilities of browsers can be further customize via configuration file (default is capabilities.json).
+The capabilities of browsers can be further customized via configuration file (default is capabilities.json).
 
 for example:
 ```json
