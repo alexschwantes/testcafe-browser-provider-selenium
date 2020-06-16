@@ -62,6 +62,15 @@ for example:
 }
 ```
 
+### Enable Video Recording
+Follow the testcafe [instructions](https://devexpress.github.io/testcafe/documentation/guides/advanced-guides/screenshots-and-videos.html#record-videos), by adding `@ffmpeg-installer/ffmpeg` to you project dependencies.
+
+Run the test using testcafe's standard video options eg.
+
+```
+testcafe selenium:chrome tests/test.js --video reports/screen-captures
+```
+
 ## Configuration
 
 Use the following optional environment variable to set additional configuration options:
