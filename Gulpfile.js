@@ -1,20 +1,13 @@
-var gulp        = require('gulp');
-var babel       = require('gulp-babel');
-var mocha       = require('gulp-mocha');
-var del         = require('del');
-var nodeVersion = require('node-version');
-
+const gulp        = require('gulp');
+const babel       = require('gulp-babel');
+const mocha       = require('gulp-mocha');
+const del         = require('del');
 
 gulp.task('clean', function () {
     return del('lib');
 });
 
 gulp.task('lint', function () {
-    // TODO: eslint supports node version 4 or higher.
-    // Remove this condition once we get rid of node 0.10 support.
-    if (nodeVersion.major === '0')
-        return null;
-
     var eslint = require('gulp-eslint');
 
     return gulp
