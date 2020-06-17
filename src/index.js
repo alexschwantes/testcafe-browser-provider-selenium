@@ -1,20 +1,24 @@
 import { Builder } from 'selenium-webdriver';
-
 import { Options as ChromeOptions } from 'selenium-webdriver/chrome';
 import { Options as FirefoxOptions } from 'selenium-webdriver/firefox';
 import { Options as SafariOptions } from 'selenium-webdriver/safari';
 import { Options as EdgeOptions } from 'selenium-webdriver/edge';
 import { Options as IeOptions } from 'selenium-webdriver/ie';
-
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 
-const optionSetterMaps = {
-    chrome:              (builder, caps) => builder.setChromeOptions(new ChromeOptions(caps)),
-    firefox:             (builder, caps) => builder.setFirefoxOptions(new FirefoxOptions(caps)),
-    safari:              (builder, caps) => builder.setSafariOptions(new SafariOptions(caps)),
-    MicrosoftEdge:       (builder, caps) => builder.setEdgeOptions(new EdgeOptions(caps)),
-    'internet explorer': (builder, caps) => builder.setIeOptions(new IeOptions(caps)),
+const createBrowserOptions = {
+    chrome:  (builder, caps) => builder.setChromeOptions(new ChromeOptions(caps)),
+    firefox: (builder, caps) => builder.setFirefoxOptions(new FirefoxOptions(caps)),
+    safari:  (builder, caps) => builder.setSafariOptions(new SafariOptions(caps)),
+    edge:    (builder, caps) => builder.setEdgeOptions(new EdgeOptions(caps)),
+    ie:      (builder, caps) => builder.setIeOptions(new IeOptions(caps)),
 };
+
+function _findMatch (string, re) {
+    const match = string.match(re);
+
+    return match ? match[1].trim() : '';
+}
 
 export default {
     // Multiple browsers support
@@ -33,33 +37,30 @@ export default {
      */
     async openBrowser (id, pageUrl, browserName) {
         if (!browserName)
-            throw new Error('Unsupported browser!');
+            throw new Error('Browser not specified!');
 
-        const browserNameString = browserName.match(/([^@:]+)/);
-        const browserFormalName = browserNameString[1].trim();
-        
-        let version = browserName.match(/@([^:]+)/);
+        const browserProfile = _findMatch(browserName, /([^@:]+)/);
+        const browser = _findMatch(browserProfile, /([^#]+)/);
+        const version = _findMatch(browserName, /@([^:]+)/);
+        const platform = _findMatch(browserName, /:(.+)/);
 
-        let platform = browserName.match(/:(.+)/);
+        const builder = new Builder().forBrowser(browser, version, platform).usingServer(this.seleniumServer);
+        const browserOptions = createBrowserOptions[browser];
 
-        version = version ? version[1] : undefined; // eslint-disable-line no-undefined
-        platform = platform ? platform[1] : undefined; // eslint-disable-line no-undefined
-
-        const builder = new Builder().forBrowser(browserFormalName, version, platform).usingServer(this.seleniumServer);
-        const optionSetter = optionSetterMaps[browserFormalName];
-
-        if (optionSetter && existsSync(this.capabilities)) {
-            const caps = JSON.parse(readFileSync(this.capabilities))[browserName.trim()];
+        if (browserOptions && existsSync(this.capabilities)) {
+            const caps = JSON.parse(readFileSync(this.capabilities))[browserProfile];
 
             if (caps)
-                optionSetter(builder, caps);
+                browserOptions(builder, caps);
         }
 
-        const browser = await builder.build(); // eslint-disable-line
-        await browser.get(pageUrl);
-        this.openedBrowsers[id] = browser;
+        const webDriver = await builder.build();
+
+        await webDriver.get(pageUrl);
+        this.openedBrowsers[id] = webDriver;
+
         if (this.heartbeatInterval > 0)
-            this.startHeartbeat(id, browser);
+            this.startHeartbeat(id, webDriver);
     },
 
     sleep (time) {
