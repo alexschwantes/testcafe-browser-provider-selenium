@@ -20,6 +20,15 @@ function _findMatch (string, re) {
     return match ? match[1].trim() : '';
 }
 
+function _formalName (browser) {
+    // browser names should respect selenium's definition
+    switch (browser) {
+        case 'ie': return 'internet explorer';
+        case 'edge': return 'MicrosoftEdge';
+        default: return browser;
+    }
+}
+
 export default {
     // Multiple browsers support
     isMultiBrowser:    false,
@@ -44,7 +53,7 @@ export default {
         const version = _findMatch(browserName, /@([^:]+)/);
         const platform = _findMatch(browserName, /:(.+)/);
 
-        const builder = new Builder().forBrowser(browser, version, platform).usingServer(this.seleniumServer);
+        const builder = new Builder().forBrowser(_formalName(browser), version, platform).usingServer(this.seleniumServer);
         const browserOptions = createBrowserOptions[browser];
 
         if (browserOptions && existsSync(this.capabilities)) {
