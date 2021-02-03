@@ -139,7 +139,7 @@ Use the following optional environment variable to set additional configuration 
 * `SELENIUM_HEARTBEAT` - (optional) Adjust or disable the selenium heartbeat. Default is 10,000 milliseconds, set to <= 0 to disable.
 * `SELENIUM_CAPABILITIES` - (optional) Path to capabilities file. Default is capabilities.json.
 * `SELENIUM_MAX_TRIES` - (optional) Max tries of opening browser. Default is 1.
-* `SELENIUM_RETRY_INTERVAL` - (optional) Interval between retries of opening browser. Default is 50,000 milliseconds.
+* `SELENIUM_RETRY_INTERVAL` - (optional) Interval between retries of opening browser. Default is 5,000 milliseconds.
 
 ## Author
 Alex Schwantes
