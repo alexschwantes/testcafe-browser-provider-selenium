@@ -14,6 +14,10 @@ const createBrowserOptions = {
     ie:      (builder, caps) => builder.setIeOptions(new IeOptions(caps)),
 };
 
+function sleep (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function _findMatch (string, re) {
     const match = string.match(re);
 
@@ -63,7 +67,26 @@ export default {
                 browserOptions(builder, caps);
         }
 
-        const webDriver = await builder.build();
+        let maxTries = Number(process.env.SELENIUM_MAX_TRIES) || 1;
+
+        const retryInterval = Number(process.env.SELENIUM_RETRY_INTERVAL) || 5e3;
+
+        let webDriver;
+
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+            maxTries--;
+            try {
+                webDriver = await builder.build();
+                break;
+            }
+            catch (e) {
+                if (maxTries > 0)
+                    await sleep(retryInterval);
+                else
+                    throw e;
+            }
+        }
 
         await webDriver.get(pageUrl);
         this.openedBrowsers[id] = webDriver;

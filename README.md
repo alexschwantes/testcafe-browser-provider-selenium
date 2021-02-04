@@ -88,10 +88,10 @@ for example:
                 }
             }
         }
-    }    
+    }
 }
 ```
-The configuration for `chrome#iphonex` uses Chrome's built in presets for the device by setting the deviceName to "iPhone X". The list of presets is likely to change so check [Google Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/device-mode) for what is currently available. 
+The configuration for `chrome#iphonex` uses Chrome's built in presets for the device by setting the deviceName to "iPhone X". The list of presets is likely to change so check [Google Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/device-mode) for what is currently available.
 
 You can always set a custom user agent and device metrics as shown in `chrome#customMobile`.
 
@@ -138,6 +138,8 @@ Use the following optional environment variable to set additional configuration 
 * `SELENIUM_SERVER` - (optional) The url to the selenium server. If not set the default 'http://localhost:4444/wd/hub' will be used.
 * `SELENIUM_HEARTBEAT` - (optional) Adjust or disable the selenium heartbeat. Default is 10,000 milliseconds, set to <= 0 to disable.
 * `SELENIUM_CAPABILITIES` - (optional) Path to capabilities file. Default is capabilities.json.
+* `SELENIUM_MAX_TRIES` - (optional) Max tries of opening browser. Default is 1.
+* `SELENIUM_RETRY_INTERVAL` - (optional) Interval between retries of opening browser. Default is 5,000 milliseconds.
 
 ## Author
 Alex Schwantes
