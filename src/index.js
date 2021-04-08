@@ -56,8 +56,8 @@ export default {
         const browser = _findMatch(browserProfile, /([^#]+)/);
         const version = _findMatch(browserName, /@([^:]+)/);
         const platform = _findMatch(browserName, /:(.+)/);
-
-        const builder = new Builder().forBrowser(_formalName(browser), version, platform).usingServer(this.seleniumServer);
+        const proxy = process.env.SELENIUM_PROXY || '';
+        const builder = new Builder().usingWebDriverProxy(proxy).forBrowser(_formalName(browser), version, platform).usingServer(this.seleniumServer);
         const browserOptions = createBrowserOptions[browser];
 
         if (browserOptions && existsSync(this.capabilities)) {
