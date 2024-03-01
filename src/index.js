@@ -162,6 +162,10 @@ export default {
     },
 
     async resizeWindow (id, width, height, currentWidth, currentHeight) {
+        const resizeOffsetHeight = Number(process.env.SELENIUM_RESIZE_OFFSET_HEIGHT ?? 0);
+        
+        height += resizeOffsetHeight;
+
         /** @type {import("selenium-webdriver").WebDriver} */
         const driver = this.openedBrowsers[id];
         
