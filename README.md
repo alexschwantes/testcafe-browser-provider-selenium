@@ -141,6 +141,13 @@ Use the following optional environment variable to set additional configuration 
 * `SELENIUM_MAX_TRIES` - (optional) Max tries of opening browser. Default is 1.
 * `SELENIUM_RETRY_INTERVAL` - (optional) Interval between retries of opening browser. Default is 5,000 milliseconds.
 * `SELENIUM_PROXY` - (optional) Sets the URL of the proxy to use for the WebDriver's HTTP connections.
+* `SELENIUM_RESIZE_OFFSET_HEIGHT` - (optional) add this offset to the height of the screen when resizing the window.
+
+## Notes
+
+### Screenshots
+
+If you experience problems, where [`t.takeScreenshot`](https://testcafe.io/documentation/402675/reference/test-api/testcontroller/takescreenshot) produces screenshots, that dont have exactly the height as set using `t.resizeWindow` you might want to check the `SELENIUM_RESIZE_OFFSET_HEIGHT` enviornment variable.
 
 ## Author
 Alex Schwantes

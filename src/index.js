@@ -161,9 +161,30 @@ export default {
         return true;
     },
 
-    async resizeWindow (id, width, height /*, currentWidth, currentHeight*/) {
-        // this sets the browser size, not the size of the visible screen so output may vary. setSize doesn't appear to be a function of webdriverjs
-        await this.openedBrowsers[id].manage().window().setRect({ width: width, height: height });
+    async resizeWindow (id, width, height, currentWidth, currentHeight) {
+        /** @type {import("selenium-webdriver").WebDriver} */
+        const driver = this.openedBrowsers[id];
+        
+        // implementation based on
+        // https://github.com/DevExpress/testcafe-browser-tools/blob/master/src/api/screenshot.js
+
+        const currentClientAreaSize = { width: currentWidth, height: currentHeight };
+
+        const currentWindowSize = await driver.manage().window().getRect();
+        
+        const requestedSize = { width, height };
+        
+        const chrome = {
+            width:  currentWindowSize.width - currentClientAreaSize.width,
+            height: currentWindowSize.height - currentClientAreaSize.height,
+        };
+
+        const correctedSize = {
+            width:  requestedSize.width + chrome.width,
+            height: requestedSize.height + chrome.height,
+        };
+
+        await driver.manage().window().setRect(correctedSize);
     },
 
     async maximizeWindow (id) {
