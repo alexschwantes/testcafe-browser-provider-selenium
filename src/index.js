@@ -170,7 +170,7 @@ export default {
         const driver = this.openedBrowsers[id];
         
         // implementation based on
-        // https://github.com/DevExpress/testcafe-browser-tools/blob/master/src/api/screenshot.js
+        // https://github.com/DevExpress/testcafe-browser-tools/blob/master/src/api/resize.js
 
         const currentClientAreaSize = { width: currentWidth, height: currentHeight };
 
