@@ -149,10 +149,5 @@ Use the following optional environment variable to set additional configuration 
 
 If you experience problems, where [`t.takeScreenshot`](https://testcafe.io/documentation/402675/reference/test-api/testcontroller/takescreenshot) produces screenshots, that dont have exactly the height as set using `t.resizeWindow` you might want to check the `SELENIUM_RESIZE_OFFSET_HEIGHT` enviornment variable.
 
-### Resize
-
-[`t.resizeWindow`](https://testcafe.io/documentation/402691/reference/test-api/testcontroller/resizewindow) used to directly use Seleniums [`Window.setRect()`](https://www.selenium.dev/documentation/webdriver/interactions/windows/#set-window-size) method, which worked fine for headless mode, but not when used in windowed mode.
-This should be fixed now.
-
 ## Author
 Alex Schwantes
